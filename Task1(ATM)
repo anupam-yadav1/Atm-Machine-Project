@@ -1,0 +1,78 @@
+import sys
+
+class ATM:
+    def __init__(self):
+        # Initial setup
+        self.users = {
+            '1234': {'name': 'John Doe', 'balance': 1000, 'transactions': []}
+        }
+        self.current_user = None
+
+    def authenticate_user(self):
+        pin = input("Enter your PIN: ")
+        if pin in self.users:
+            self.current_user = pin
+            print(f"Welcome, {self.users[pin]['name']}!")
+        else:
+            print("Invalid PIN. Try again.")
+            sys.exit()
+
+    def check_balance(self):
+        user_data = self.users[self.current_user]
+        print(f"Your balance is: ${user_data['balance']}")
+
+    def deposit_funds(self):
+        amount = float(input("Enter amount to deposit: $"))
+        if amount > 0:
+            self.users[self.current_user]['balance'] += amount
+            self.users[self.current_user]['transactions'].append(f"Deposited: ${amount}")
+            print(f"Deposited: ${amount}. New balance: ${self.users[self.current_user]['balance']}")
+        else:
+            print("Invalid amount. Deposit must be greater than zero.")
+
+    def withdraw_funds(self):
+        amount = float(input("Enter amount to withdraw: $"))
+        if 0 < amount <= self.users[self.current_user]['balance']:
+            self.users[self.current_user]['balance'] -= amount
+            self.users[self.current_user]['transactions'].append(f"Withdrew: ${amount}")
+            print(f"Withdrew: ${amount}. New balance: ${self.users[self.current_user]['balance']}")
+        else:
+            print("Invalid amount or insufficient funds.")
+
+    def view_transactions(self):
+        transactions = self.users[self.current_user]['transactions']
+        if transactions:
+            print("Transaction history:")
+            for transaction in transactions:
+                print(transaction)
+        else:
+            print("No transactions found.")
+
+    def main_menu(self):
+        while True:
+            print("\nATM Menu")
+            print("1. Check Balance")
+            print("2. Deposit Funds")
+            print("3. Withdraw Funds")
+            print("4. View Transactions")
+            print("5. Exit")
+            choice = input("Select an option: ")
+
+            if choice == '1':
+                self.check_balance()
+            elif choice == '2':
+                self.deposit_funds()
+            elif choice == '3':
+                self.withdraw_funds()
+            elif choice == '4':
+                self.view_transactions()
+            elif choice == '5':
+                print("Thank you for using the ATM. Goodbye!")
+                sys.exit()
+            else:
+                print("Invalid choice. Please select a valid option.")
+
+if __name__ == "__main__":
+    atm = ATM()
+    atm.authenticate_user()
+    atm.main_menu()
